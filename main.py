@@ -5,6 +5,8 @@ from Models.player import Player
 # High tier - 2000 - 1800
 # Mid tier - 1800 - 1700
 # Bottom tier - 1700 - 1500
+from Models.tournament import Tournament
+
 players = [
     Player("Top High", 2000),
     Player("Mid High", 1900),
@@ -36,3 +38,5 @@ def run_sim_and_report(player_1, player_2, player_3):
 run_sim_and_report(players[0], players[3], players[6])
 run_sim_and_report(players[0], players[1], players[2])
 run_sim_and_report(players[2], players[3], players[4])
+
+tournament = Tournament(49)

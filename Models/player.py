@@ -1,5 +1,5 @@
 class Player(object):
-    def __init__(self, name: str, rating: int):
+    def __init__(self, name: str, rating: float):
         self.name = name
         self.rating = rating
         self.points = 0
