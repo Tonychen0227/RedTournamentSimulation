@@ -1,11 +1,11 @@
-from Models.player import Player
+from models.player import Player
 
 
 ### ELO RANGES
 # High tier - 2000 - 1800
 # Mid tier - 1800 - 1700
 # Bottom tier - 1700 - 1500
-from Models.tournament import Tournament
+from models.tournament import Tournament
 
 players = [
     Player("Top High", 2000),

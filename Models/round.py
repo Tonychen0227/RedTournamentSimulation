@@ -1,5 +1,5 @@
-from Models.bracket import Bracket
-from Models.player import Player
+from models.bracket import Bracket
+from models.player import Player
 
 
 class Round:
