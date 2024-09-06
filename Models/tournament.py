@@ -1,6 +1,6 @@
-from models.bracket import Bracket
-from models.player import Player
-from models.round import Round
+from .bracket import Bracket
+from .player import Player
+from .round import Round
 import math
 
 
@@ -10,7 +10,7 @@ class Tournament:
     MID_TIER_LOW_ELO = 1700
     BOTTOM_TIER_LOW_ELO = 1500
 
-    def __init__(self, num_players):
+    def __init__(self, num_players: int) -> None:
         self.high_tier_count = math.ceil(num_players / 3)
         num_players -= self.high_tier_count
 
