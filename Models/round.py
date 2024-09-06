@@ -10,7 +10,7 @@ class Round:
         if bracket not in self.brackets.keys():
             self.brackets[bracket] = []
 
-        print(f"Adding player {player.name} with rating {player.rating} to bracket {bracket}")
+        print(f"Adding {player} to bracket {bracket}")
 
         self.brackets[bracket].append(player)
 
