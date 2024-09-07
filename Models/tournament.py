@@ -1,16 +1,22 @@
-from models.bracket import Bracket
-from models.player import Player
-from models.round import Round
+from .bracket import Bracket
+from .player import Player
+from .round import Round
 import math
+
+default_elo_ranges = (1500, 1700, 1800, 2000)
 
 
 class Tournament:
-    TOP_TIER_HIGH_ELO = 2000
-    TOP_TIER_LOW_ELO = 1800
-    MID_TIER_LOW_ELO = 1700
-    BOTTOM_TIER_LOW_ELO = 1500
+    def __init__(
+        self, num_players: int, elo_ranges: tuple[int] = default_elo_ranges
+    ) -> None:
 
-    def __init__(self, num_players):
+        (
+            self.bottom_tier_low_elo,
+            self.mid_tier_low_elo,
+            self.top_tier_low_elo,
+            self.top_tier_high_elo,
+        ) = elo_ranges
         self.high_tier_count = math.ceil(num_players / 3)
         num_players -= self.high_tier_count
 
@@ -19,15 +25,27 @@ class Tournament:
 
         self.low_tier_count = num_players
 
-        print(f"Counts: High={self.high_tier_count}, Mid={self.mid_tier_count}, Low={self.low_tier_count}")
+        print(
+            f"Counts: High={self.high_tier_count}, Mid={self.mid_tier_count}, Low={self.low_tier_count}"
+        )
 
         self.players = []
         self.current_round = Round()
 
         for x in [
-            [self.high_tier_count, self.TOP_TIER_HIGH_ELO, self.TOP_TIER_LOW_ELO, "High"],
-            [self.mid_tier_count, self.TOP_TIER_LOW_ELO, self.MID_TIER_LOW_ELO, "Mid"],
-            [self.low_tier_count, self.MID_TIER_LOW_ELO, self.BOTTOM_TIER_LOW_ELO, "Low"]
+            [
+                self.high_tier_count,
+                self.top_tier_high_elo,
+                self.top_tier_low_elo,
+                "High",
+            ],
+            [self.mid_tier_count, self.top_tier_low_elo, self.mid_tier_low_elo, "Mid"],
+            [
+                self.low_tier_count,
+                self.mid_tier_low_elo,
+                self.bottom_tier_low_elo,
+                "Low",
+            ],
         ]:
             low = x[2]
             increment = (x[1] - x[2]) / (x[0] - 1)
@@ -45,7 +63,12 @@ class Tournament:
             self.current_round.add_player(self.players[i], Bracket.HIGH)
 
         for i in range(0, self.mid_tier_count):
-            self.current_round.add_player(self.players[self.high_tier_count + i], Bracket.MEDIUM)
+            self.current_round.add_player(
+                self.players[self.high_tier_count + i], Bracket.MEDIUM
+            )
 
         for i in range(0, self.low_tier_count):
-            self.current_round.add_player(self.players[self.high_tier_count + self.mid_tier_count + i], Bracket.LOW)
+            self.current_round.add_player(
+                self.players[self.high_tier_count + self.mid_tier_count + i],
+                Bracket.LOW,
+            )
