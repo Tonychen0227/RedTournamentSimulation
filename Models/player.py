@@ -2,12 +2,15 @@ from typing import Iterable
 
 
 class Player:
-    def __init__(self, name: str, rating: float) -> None:
+    def __init__(self, name: str, rating: float, should_print: bool = True) -> None:
         self.name = name
         self.rating = rating
         self.points = 0
+        self.should_print = should_print
 
     def give_points(self, points: int) -> None:
+        if self.should_print:
+            print(f"Player {self} given {points} points")
         self.points += points
 
     def expected_score_against(self, opponent: "Player") -> float:

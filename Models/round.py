@@ -5,14 +5,16 @@ import random
 
 
 class Round:
-    def __init__(self) -> None:
+    def __init__(self, should_print: bool = True) -> None:
         self.brackets: dict[Bracket, list[Player]] = {}
+        self.should_print = should_print
 
     def add_player(self, player: Player, bracket: Bracket) -> None:
         if bracket not in self.brackets.keys():
             self.brackets[bracket] = []
 
-        print(f"Adding {player} to bracket {bracket}")
+        if self.should_print:
+            print(f"Adding {player} to bracket {bracket}")
 
         self.brackets[bracket].append(player)
 
@@ -22,7 +24,7 @@ class Round:
 
         self.brackets[bracket] = [x for x in self.brackets[bracket] if x != player]
 
-    def generate_matches_and_simulate_round(self) -> dict[Bracket, list]:
+    def generate_matches_and_simulate_round(self) -> dict[Bracket, list[list[Player]]]:
         matches = {
             Bracket.HIGH: [],
             Bracket.MID: [],
@@ -56,7 +58,8 @@ class Round:
                     players.remove(player_3)
                     match.append(player_3)
 
-                print(f"Match {match} created in bracket {category}")
+                if self.should_print:
+                    print(f"Match {match} created in bracket {category}")
 
                 result = []
 
@@ -87,7 +90,8 @@ class Round:
 
                 results[category].append(result)
 
-                print(f"Simulated result: {result}")
+                if self.should_print:
+                    print(f"Simulated result: {result}")
 
         return results
 

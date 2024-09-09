@@ -51,5 +51,25 @@ if __name__ == "__main__":
     run_sim_and_report(players[0], players[3], players[6])
     run_sim_and_report(players[0], players[1], players[2])
     run_sim_and_report(players[2], players[3], players[4])
-    tournament = Tournament(49, generate_elo_ranges)
-    tournament.current_round.generate_matches_and_simulate_round()
+
+    top_cut_summary = {}
+
+    num_trials = 10000
+
+    for i in range(1, num_trials):
+        tournament = Tournament(49, generate_elo_ranges, False)
+
+        for x in range(1, 4):
+            tournament.give_passive_points()
+            tournament.run_round()
+
+        top_cut = tournament.get_top_cut()
+
+        for x in top_cut:
+            if x.name not in top_cut_summary:
+                top_cut_summary[x.name] = 0
+
+            top_cut_summary[x.name] += 1
+
+    top_cut_summary = {k: f"Cut rate {round((v / num_trials) * 100, 2)}%" for k, v in sorted(top_cut_summary.items(), key=lambda item: item[1], reverse=True)}
+    print(top_cut_summary)
