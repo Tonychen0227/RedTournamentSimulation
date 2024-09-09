@@ -1,3 +1,4 @@
+from models.helpers import Helpers
 from models.player import Player
 from models.tournament import Tournament
 from typing import Iterable
@@ -27,19 +28,11 @@ def generate_players(mean_elo: int, range_sizes: list[int]) -> list[Player]:
 
 
 def run_sim_and_report(player_1: Player, player_2: Player, player_3: Player):
-    contestants = [player_1, player_2, player_3]
-
-    rates = []
-
-    for x in contestants:
-        rates.append(x.expected_score_against_many([k for k in contestants if k != x]))
-
-    rates_sum = sum(rates)
-    rates = [k / rates_sum for k in rates]
+    rates = Helpers.get_player_winrates(player_1, player_2, player_3)
 
     print("MATCH PREDICTION")
-    for x in range(0, len(contestants)):
-        print(f"{contestants[x].name}, win chance {round(rates[x] * 100, 2)}%")
+    for x in rates.keys():
+        print(f"{x.name}, win chance {round(rates[x] * 100, 2)}%")
     print()
 
 
@@ -59,3 +52,4 @@ if __name__ == "__main__":
     run_sim_and_report(players[0], players[1], players[2])
     run_sim_and_report(players[2], players[3], players[4])
     tournament = Tournament(49, generate_elo_ranges)
+    tournament.current_round.generate_matches_and_simulate_round()

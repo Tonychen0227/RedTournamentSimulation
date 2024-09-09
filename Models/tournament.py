@@ -48,3 +48,9 @@ class Tournament:
         for player in self.players:
             bracket = player.name.split("_")[0].upper()
             self.current_round.add_player(player, Bracket[bracket])
+
+    def give_passive_points(self):
+        self.current_round.give_passive_points()
+
+    def run_round(self):
+        results = self.current_round.generate_matches_and_simulate_round()
