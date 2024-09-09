@@ -69,7 +69,7 @@ class Tournament:
             Bracket.LOW: [Bracket.MID, Bracket.LOW]
         }
 
-        points_per_win = 2
+        points_per_win = 4
 
         for bracket in results.keys():
             for result in results[bracket]:
@@ -107,7 +107,4 @@ class Tournament:
                 if player.points == last_seen_points:
                     top_cut.append(player)
 
-        if self.should_print:
-            print(top_cut)
-
-        return top_cut
+        return (last_seen_points, top_cut)

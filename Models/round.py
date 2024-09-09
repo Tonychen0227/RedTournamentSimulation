@@ -58,9 +58,6 @@ class Round:
                     players.remove(player_3)
                     match.append(player_3)
 
-                if self.should_print:
-                    print(f"Match {match} created in bracket {category}")
-
                 result = []
 
                 # Simulate the match
@@ -90,13 +87,10 @@ class Round:
 
                 results[category].append(result)
 
-                if self.should_print:
-                    print(f"Simulated result: {result}")
-
         return results
 
     def give_passive_points(self):
-        score_distribution = [[Bracket.HIGH, 2], [Bracket.MID, 1], [Bracket.LOW, 0]]
+        score_distribution = [[Bracket.HIGH, 3], [Bracket.MID, 1], [Bracket.LOW, 0]]
 
         for bracket, points in score_distribution:
             for player in self.brackets[bracket]:
