@@ -17,58 +17,34 @@ class Tournament:
             self.top_tier_low_elo,
             self.top_tier_high_elo,
         ) = elo_ranges
-        self.high_tier_count = math.ceil(num_players / 3)
-        num_players -= self.high_tier_count
-
-        self.mid_tier_count = math.ceil(num_players / 2)
-        num_players -= self.mid_tier_count
-
-        self.low_tier_count = num_players
+        self.high_tier_size = math.ceil(num_players / 3)
+        self.mid_tier_size = math.ceil((num_players - self.high_tier_size) / 2)
+        self.low_tier_size = num_players - self.high_tier_size - self.mid_tier_size
 
         print(
-            f"Counts: High={self.high_tier_count}, Mid={self.mid_tier_count}, Low={self.low_tier_count}"
+            f"Tier Sizes: High={self.high_tier_size}, Mid={self.mid_tier_size}, Low={self.low_tier_size}"
         )
 
-        self.players = []
+        self.players: list[Player] = []
         self.current_round = Round()
 
-        for x in [
-            [
-                self.high_tier_count,
-                self.top_tier_high_elo,
-                self.top_tier_low_elo,
-                "High",
-            ],
-            [self.mid_tier_count, self.top_tier_low_elo, self.mid_tier_low_elo, "Mid"],
-            [
-                self.low_tier_count,
-                self.mid_tier_low_elo,
-                self.bottom_tier_low_elo,
-                "Low",
-            ],
-        ]:
-            low = x[2]
-            increment = (x[1] - x[2]) / (x[0] - 1)
+        # Generate players evenly amongst elo tiers
+        for tier_size, tier_top_elo, tier_bottom_elo, tier_name in zip(
+            (self.high_tier_size, self.mid_tier_size, self.low_tier_size),
+            (self.top_tier_high_elo, self.top_tier_low_elo, self.mid_tier_low_elo),
+            (self.top_tier_low_elo, self.mid_tier_low_elo, self.bottom_tier_low_elo),
+            ("High", "Mid", "Low"),
+        ):
+            increment = (tier_top_elo - tier_bottom_elo) / (tier_size - 1)
+            print(f"low={tier_bottom_elo}, increment={increment}")
 
-            print(low, increment)
-
-            for i in range(0, x[0]):
-                name = f"{x[3]}{i}"
-                self.players.append(Player(name, low + (i * increment)))
+            for i in range(tier_size):
+                name = f"{tier_name}_{i}"
+                self.players.append(Player(name, tier_bottom_elo + (i * increment)))
 
         for x in self.players:
-            print(f"Name {x.name}, Rating {round(x.rating, 2)}")
+            print(f"Name: {x.name}, Rating: {round(x.rating, 2)}")
 
-        for i in range(0, self.high_tier_count):
-            self.current_round.add_player(self.players[i], Bracket.HIGH)
-
-        for i in range(0, self.mid_tier_count):
-            self.current_round.add_player(
-                self.players[self.high_tier_count + i], Bracket.MEDIUM
-            )
-
-        for i in range(0, self.low_tier_count):
-            self.current_round.add_player(
-                self.players[self.high_tier_count + self.mid_tier_count + i],
-                Bracket.LOW,
-            )
+        for player in self.players:
+            bracket = player.name.split("_")[0].upper()
+            self.current_round.add_player(player, Bracket[bracket])
