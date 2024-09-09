@@ -38,4 +38,4 @@ class Player:
         return self.expected_score_against(avg_opponent)
 
     def __repr__(self):
-        return f"Player({self.name}, {round(self.rating, 2)})"
+        return f"Player({self.name}, {round(self.rating, 2)}, POINTS={self.points})"

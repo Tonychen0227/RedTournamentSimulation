@@ -1,5 +1,7 @@
 from .bracket import Bracket
+from .helpers import Helpers
 from .player import Player
+import random
 
 
 class Round:
@@ -20,11 +22,77 @@ class Round:
 
         self.brackets[bracket] = [x for x in self.brackets[bracket] if x != player]
 
-    def generate_matches_and_simulate_round(self) -> None:
-        matches = []
+    def generate_matches_and_simulate_round(self) -> dict[Bracket, list]:
+        matches = {
+            Bracket.HIGH: [],
+            Bracket.MID: [],
+            Bracket.LOW: []
+        }
+
+        results = {
+            Bracket.HIGH: [],
+            Bracket.MID: [],
+            Bracket.LOW: []
+        }
+
+        for category in [Bracket.HIGH, Bracket.MID, Bracket.LOW]:
+            players = self.brackets[category]
+
+            while len(players) > 0:
+                #generate 2-man matches
+                match = []
+
+                player_1 = random.choice(players)
+                players.remove(player_1)
+                match.append(player_1)
+
+                player_2 = random.choice(players)
+                players.remove(player_2)
+                match.append(player_2)
+
+                player_3 = None
+                if len(players) % 3 == 1:
+                    player_3 = random.choice(players)
+                    players.remove(player_3)
+                    match.append(player_3)
+
+                print(f"Match {match} created in bracket {category}")
+
+                result = []
+
+                # Simulate the match
+                if len(match) == 3:
+                    win_rates = Helpers.get_player_winrates(match[0], match[1], match[2])
+                    roll = random.random()
+
+                    winner = None
+                    cumulative = 0
+                    for x in win_rates.keys():
+                        cumulative += win_rates[x]
+                        if roll < cumulative:
+                            winner = x
+                            break
+
+                    result.append(winner)
+                    match.remove(winner)
+
+                expected_points = match[0].expected_score_against(match[1])
+                roll = random.random()
+                if roll < expected_points:
+                    result.append(match[0])
+                    result.append(match[1])
+                else:
+                    result.append(match[1])
+                    result.append(match[0])
+
+                results[category].append(result)
+
+                print(f"Simulated result: {result}")
+
+        return results
 
     def give_passive_points(self):
-        score_distribution = [[Bracket.HIGH, 2], [Bracket.MEDIUM, 1], [Bracket.LOW, 0]]
+        score_distribution = [[Bracket.HIGH, 2], [Bracket.MID, 1], [Bracket.LOW, 0]]
 
         for bracket, points in score_distribution:
             for player in self.brackets[bracket]:
